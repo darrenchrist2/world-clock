@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Peta Waktu Dunia — Futuristik</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#070a12;
+    --bg2:#0b0f1c;
+    --txt:#e9f1ff;
+    --muted:#9fb3d9;
+    --neon:#66fcf1;
+    --neon2:#8a5aff;
+    --neon3:#00ffa3;
+    --glass:rgba(255,255,255,.05);
+    --stroke:rgba(255,255,255,.08);
+    --shadow:0 10px 30px rgba(0,0,0,.35), inset 0 0 0 1px var(--stroke);
+  }
+
+  *{box-sizing:border-box}
+  html,body{height:100%;background: radial-gradient(1200px 1200px at 50% -10%, #102444 0%, #0b1222 35%, #070a12 70%) fixed; color:var(--txt); margin:0}
+  body{
+    font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol";
+    overflow-x:hidden;
+  }
+
+  /* cyber grid glow */
+  .grid-bg{
+    position:fixed; inset:0; pointer-events:none; z-index:-1;
+    background:
+      linear-gradient(transparent 49%, rgba(102,252,241,.06) 50%, transparent 51%) 0 0/100% 32px,
+      linear-gradient(90deg, transparent 49%, rgba(138,90,255,.06) 50%, transparent 51%) 0 0/32px 100%;
+    mask: radial-gradient(60% 40% at 50% 0%, #000 40%, transparent 80%);
+    animation: drift 18s linear infinite;
+  }
+  @keyframes drift{ to{ background-position: 0 32px, 32px 0 } }
+
+  /* floating particles */
+  .stars{position:fixed; inset:0; pointer-events:none; z-index:-1; overflow:hidden; filter:drop-shadow(0 0 4px rgba(102,252,241,.7))}
+  .star{position:absolute; width:2px; height:2px; background: #aef; border-radius:50%; opacity:.65;
+        animation: float var(--dur) linear infinite; transform: translateY(110vh)}
+  @keyframes float{ to{ transform: translateY(-10vh)} }
+
+  header{
+    position:sticky; top:0; z-index:5; backdrop-filter: blur(8px);
+    background: linear-gradient(180deg, rgba(7,10,18,.65), rgba(7,10,18,0));
+    border-bottom: 1px solid var(--stroke);
+  }
+  .wrap{max-width:1200px; margin:0 auto; padding:16px 20px}
+  .brand{
+    display:flex; align-items:center; gap:12px; letter-spacing:.04em;
+    font-family: Orbitron, Inter, sans-serif; text-transform: uppercase;
+  }
+  .brand .logo{
+    width:34px; height:34px; border-radius:10px; position:relative; overflow:hidden;
+    background: radial-gradient(120% 120% at 20% 20%, var(--neon) 0%, #1b2f4a 35%, transparent 60%),
+                linear-gradient(135deg, rgba(138,90,255,.8), rgba(0,255,163,.5));
+    box-shadow: 0 0 20px rgba(102,252,241,.35), inset 0 0 0 1px rgba(255,255,255,.15);
+  }
+  .title-sub{color:var(--muted); font-size:.92rem}
+
+  /* Featured Indonesia clock */
+  .featured{
+    display:grid; place-items:center; padding:24px 16px 10px; margin:6px auto 10px;
+  }
+  .id-card{
+    width:min(960px, 96vw); border-radius:24px; padding:22px 22px 18px;
+    background: linear-gradient(170deg, rgba(12,20,38,.75), rgba(12,16,28,.35)) , var(--glass);
+    box-shadow: var(--shadow), 0 0 60px rgba(102,252,241,.15);
+    border:1px solid var(--stroke); position:relative; overflow:hidden;
+    transform-style:preserve-3d; will-change: transform;
+  }
+  .id-card:before{
+    content:""; position:absolute; inset:-2px; background:
+    conic-gradient(from 0deg at 50% 50%, rgba(102,252,241,.0), rgba(102,252,241,.15), rgba(138,90,255,.15), rgba(0,255,163,.15), rgba(102,252,241,.0));
+    filter: blur(18px); opacity:.8; z-index:0; animation: spin 18s linear infinite;
+  }
+  @keyframes spin{ to{ transform: rotate(360deg)} }
+  .id-head{
+    display:flex; align-items:center; justify-content:space-between; gap:10px; position:relative; z-index:1;
+  }
+  .id-flag{
+    display:flex; align-items:center; gap:14px; font-family: Orbitron, Inter, sans-serif; letter-spacing:.04em;
+  }
+  .pill{
+    border:1px solid var(--stroke); background: rgba(255,255,255,.04); padding:6px 10px; border-radius:999px; font-size:.85rem; color:var(--muted)
+  }
+  .id-name{ font-size: clamp(20px, 2.4vw, 28px); font-weight:800; text-transform:uppercase }
+  .id-time{
+    display:flex; align-items:baseline; gap:14px; white-space:nowrap; font-variant-numeric: tabular-nums;
+  }
+  .id-time .big{
+    font-family: Orbitron, Inter, sans-serif;
+    font-size: clamp(42px, 8.4vw, 96px); line-height:1; font-weight:900; letter-spacing:.03em;
+    text-shadow: 0 0 18px rgba(102,252,241,.35), 0 0 34px rgba(138,90,255,.25);
+  }
+  .id-time .sec{ font-size: clamp(18px, 2.2vw, 28px); opacity:.9 }
+  .id-time .date{ color:var(--muted); font-size: clamp(12px, 1.6vw, 16px) }
+
+  /* Grid of world clocks */
+  .controls{
+    display:flex; gap:12px; flex-wrap:wrap; align-items:center; justify-content:center;
+    margin: 8px auto 4px; padding: 0 18px 8px;
+  }
+  .search{
+    display:flex; align-items:center; gap:10px; padding:10px 14px; border-radius:12px; width:min(560px, 90vw);
+    border:1px solid var(--stroke); background: rgba(255,255,255,.04); color:var(--txt);
+  }
+  .search input{
+    background:transparent; border:0; outline:none; color:inherit; width:100%; font-size:15px;
+  }
+  .btn{
+    border:1px solid var(--stroke); background:linear-gradient(180deg, rgba(255,255,255,.07), rgba(255,255,255,.02));
+    padding:10px 14px; border-radius:12px; color:var(--txt); cursor:pointer;
+    font-weight:600;
+  }
+  .btn:hover{ box-shadow: 0 0 0 2px rgba(102,252,241,.2) inset }
+  .badge{ font-family: Orbitron; letter-spacing:.04em; color:var(--muted); font-size:.8rem }
+
+  .grid{
+    --size: 260px;
+    display:grid; gap:14px; padding: 8px 18px 60px; max-width: 1400px; margin:0 auto;
+    grid-template-columns: repeat(auto-fill, minmax(var(--size), 1fr));
+  }
+  .card{
+    border-radius:18px; padding:14px 14px 12px; position:relative; overflow:hidden;
+    background: linear-gradient(160deg, rgba(16,24,42,.75), rgba(10,14,24,.45));
+    border:1px solid var(--stroke); box-shadow: var(--shadow);
+    transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
+    transform-style:preserve-3d; will-change: transform;
+  }
+  .card:hover{
+    transform: translateY(-3px) rotateX(4deg); border-color: rgba(102,252,241,.35);
+    box-shadow: 0 12px 40px rgba(0,0,0,.5), 0 0 24px rgba(102,252,241,.15);
+  }
+  .card:after{
+    content:""; position:absolute; inset:-2px; background:
+    radial-gradient(600px 140px at 50% -10%, rgba(102,252,241,.12), transparent 60%),
+    radial-gradient(260px 260px at 0% 100%, rgba(138,90,255,.12), transparent 60%);
+    pointer-events:none;
+  }
+  .row{display:flex; align-items:center; justify-content:space-between; gap:10px}
+  .name{font-weight:800; letter-spacing:.02em}
+  .tz{color:var(--muted); font-size:.85rem}
+  .time{font-family: Orbitron, Inter, sans-serif; font-size: clamp(20px, 2.5vw, 28px); font-weight:800; letter-spacing:.03em; margin-top:8px}
+  .date{color:var(--muted); font-size:.85rem}
+  .secBlink{ animation: blink 1s steps(2, jump-none) infinite }
+  @keyframes blink{ 50%{ opacity:.35 } }
+
+  footer{ color:var(--muted); text-align:center; padding: 10px 0 40px; font-size:.85rem}
+  .legend{ opacity:.9 }
+
+  /* Scrollbar minimal */
+  ::-webkit-scrollbar{ height:10px; width:10px }
+  ::-webkit-scrollbar-thumb{ background:linear-gradient(180deg, rgba(102,252,241,.35), rgba(138,90,255,.35)); border-radius:10px }
+</style>
+</head>
+<body>
+  <div class="grid-bg"></div>
+  <div class="stars" id="stars"></div>
+
+  <header>
+    <div class="wrap">
+      <div class="brand">
+        <div class="logo"></div>
+        <div>
+          <div style="font-weight:900">Peta Waktu Dunia</div>
+          <div class="title-sub">UI futuristik • realtime • seluruh negara</div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- FEATURED INDONESIA -->
+  <section class="featured">
+    <div class="id-card" id="idCard" aria-live="polite">
+      <div class="id-head">
+        <div class="id-flag">
+          <span class="pill">Indonesia • ID</span>
+          <span class="id-name">Zona Waktu Jakarta</span>
+        </div>
+        <div class="pill">Ultimate Neon UI</div>
+      </div>
+      <div class="id-time" style="margin-top:12px">
+        <div>
+          <div class="big"><span id="idTime">00:00:00</span> <span class="sec" id="idSec">•</span></div>
+          <div class="date" id="idDate">Kamis, 16 Oktober 2025</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTROLS -->
+  <section class="controls">
+    <div class="search">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M21 21l-3.5-3.5M10.5 18a7.5 7.5 0 1 1 0-15 7.5 7.5 0 0 1 0 15Z" stroke="currentColor" stroke-width="1.7" opacity=".8"/></svg>
+      <input id="searchInput" placeholder="Cari negara atau zona waktu… (mis: Japan, Europe/London, WITA)" />
+    </div>
+    <button class="btn" id="btnReset">Reset</button>
+    <span class="badge" id="badgeCount">Memuat…</span>
+  </section>
+
+  <!-- WORLD GRID -->
+  <main class="grid" id="grid"></main>
+
+  <footer>
+    <div class="legend">Jam menggunakan zona waktu ibukota setiap negara (UN 195 negara). Beberapa negara memiliki lebih dari satu zona — di sini difokuskan pada ibukota untuk konsistensi tampilan.</div>
+  </footer>
+
+<script>
+/* ---------------------- DATASET NEGARA → TZ (ibukota) -----------------------
+  Catatan:
+  - Setiap entri: "Nama Negara|IANA Time Zone" untuk jam ibukotanya.
+  - UN 193 + 2 pengamat (Vatikan & Palestina) = 195 negara.
+  - Indonesia ditampilkan khusus sebagai kartu unggulan (Asia/Jakarta).
+-----------------------------------------------------------------------------*/
+const COUNTRY_TZ_RAW = `
+Afghanistan|Asia/Kabul
+Albania|Europe/Tirane
+Algeria|Africa/Algiers
+Andorra|Europe/Andorra
+Angola|Africa/Luanda
+Antigua and Barbuda|America/Antigua
+Argentina|America/Argentina/Buenos_Aires
+Armenia|Asia/Yerevan
+Australia|Australia/Sydney
+Austria|Europe/Vienna
+Azerbaijan|Asia/Baku
+Bahamas|America/Nassau
+Bahrain|Asia/Bahrain
+Bangladesh|Asia/Dhaka
+Barbados|America/Barbados
+Belarus|Europe/Minsk
+Belgium|Europe/Brussels
+Belize|America/Belize
+Benin|Africa/Porto-Novo
+Bhutan|Asia/Thimphu
+Bolivia|America/La_Paz
+Bosnia and Herzegovina|Europe/Sarajevo
+Botswana|Africa/Gaborone
+Brazil|America/Sao_Paulo
+Brunei|Asia/Brunei
+Bulgaria|Europe/Sofia
+Burkina Faso|Africa/Ouagadougou
+Burundi|Africa/Bujumbura
+Cabo Verde|Atlantic/Cape_Verde
+Cambodia|Asia/Phnom_Penh
+Cameroon|Africa/Douala
+Canada|America/Toronto
+Central African Republic|Africa/Bangui
+Chad|Africa/Ndjamena
+Chile|America/Santiago
+China|Asia/Shanghai
+Colombia|America/Bogota
+Comoros|Indian/Comoro
+Congo|Africa/Brazzaville
+Democratic Republic of the Congo|Africa/Kinshasa
+Costa Rica|America/Costa_Rica
+Côte d’Ivoire|Africa/Abidjan
+Croatia|Europe/Zagreb
+Cuba|America/Havana
+Cyprus|Asia/Nicosia
+Czechia|Europe/Prague
+Denmark|Europe/Copenhagen
+Djibouti|Africa/Djibouti
+Dominica|America/Dominica
+Dominican Republic|America/Santo_Domingo
+Ecuador|America/Guayaquil
+Egypt|Africa/Cairo
+El Salvador|America/El_Salvador
+Equatorial Guinea|Africa/Malabo
+Eritrea|Africa/Asmara
+Estonia|Europe/Tallinn
+Eswatini|Africa/Mbabane
+Ethiopia|Africa/Addis_Ababa
+Fiji|Pacific/Fiji
+Finland|Europe/Helsinki
+France|Europe/Paris
+Gabon|Africa/Libreville
+Gambia|Africa/Banjul
+Georgia|Asia/Tbilisi
+Germany|Europe/Berlin
+Ghana|Africa/Accra
+Greece|Europe/Athens
+Grenada|America/Grenada
+Guatemala|America/Guatemala
+Guinea|Africa/Conakry
+Guinea-Bissau|Africa/Bissau
+Guyana|America/Guyana
+Haiti|America/Port-au-Prince
+Honduras|America/Tegucigalpa
+Hungary|Europe/Budapest
+Iceland|Atlantic/Reykjavik
+India|Asia/Kolkata
+Indonesia|Asia/Jakarta
+Iran|Asia/Tehran
+Iraq|Asia/Baghdad
+Ireland|Europe/Dublin
+Israel|Asia/Jerusalem
+Italy|Europe/Rome
+Jamaica|America/Jamaica
+Japan|Asia/Tokyo
+Jordan|Asia/Amman
+Kazakhstan|Asia/Almaty
+Kenya|Africa/Nairobi
+Kiribati|Pacific/Tarawa
+Kuwait|Asia/Kuwait
+Kyrgyzstan|Asia/Bishkek
+Laos|Asia/Vientiane
+Latvia|Europe/Riga
+Lebanon|Asia/Beirut
+Lesotho|Africa/Maseru
+Liberia|Africa/Monrovia
+Libya|Africa/Tripoli
+Liechtenstein|Europe/Vaduz
+Lithuania|Europe/Vilnius
+Luxembourg|Europe/Luxembourg
+Madagascar|Indian/Antananarivo
+Malawi|Africa/Blantyre
+Malaysia|Asia/Kuala_Lumpur
+Maldives|Indian/Maldives
+Mali|Africa/Bamako
+Malta|Europe/Malta
+Marshall Islands|Pacific/Majuro
+Mauritania|Africa/Nouakchott
+Mauritius|Indian/Mauritius
+Mexico|America/Mexico_City
+Micronesia|Pacific/Pohnpei
+Moldova|Europe/Chisinau
+Monaco|Europe/Monaco
+Mongolia|Asia/Ulaanbaatar
+Montenegro|Europe/Podgorica
+Morocco|Africa/Casablanca
+Mozambique|Africa/Maputo
+Myanmar|Asia/Yangon
+Namibia|Africa/Windhoek
+Nauru|Pacific/Nauru
+Nepal|Asia/Kathmandu
+Netherlands|Europe/Amsterdam
+New Zealand|Pacific/Auckland
+Nicaragua|America/Managua
+Niger|Africa/Niamey
+Nigeria|Africa/Lagos
+North Korea|Asia/Pyongyang
+North Macedonia|Europe/Skopje
+Norway|Europe/Oslo
+Oman|Asia/Muscat
+Pakistan|Asia/Karachi
+Palau|Pacific/Palau
+Panama|America/Panama
+Papua New Guinea|Pacific/Port_Moresby
+Paraguay|America/Asuncion
+Peru|America/Lima
+Philippines|Asia/Manila
+Poland|Europe/Warsaw
+Portugal|Europe/Lisbon
+Qatar|Asia/Qatar
+Romania|Europe/Bucharest
+Russia|Europe/Moscow
+Rwanda|Africa/Kigali
+Saint Kitts and Nevis|America/St_Kitts
+Saint Lucia|America/St_Lucia
+Saint Vincent and the Grenadines|America/St_Vincent
+Samoa|Pacific/Apia
+San Marino|Europe/San_Marino
+Sao Tome and Principe|Africa/Sao_Tome
+Saudi Arabia|Asia/Riyadh
+Senegal|Africa/Dakar
+Serbia|Europe/Belgrade
+Seychelles|Indian/Mahe
+Sierra Leone|Africa/Freetown
+Singapore|Asia/Singapore
+Slovakia|Europe/Bratislava
+Slovenia|Europe/Ljubljana
+Solomon Islands|Pacific/Guadalcanal
+Somalia|Africa/Mogadishu
+South Africa|Africa/Johannesburg
+South Korea|Asia/Seoul
+South Sudan|Africa/Juba
+Spain|Europe/Madrid
+Sri Lanka|Asia/Colombo
+Sudan|Africa/Khartoum
+Suriname|America/Paramaribo
+Sweden|Europe/Stockholm
+Switzerland|Europe/Zurich
+Syria|Asia/Damascus
+Tajikistan|Asia/Dushanbe
+Tanzania|Africa/Dar_es_Salaam
+Thailand|Asia/Bangkok
+Timor-Leste|Asia/Dili
+Togo|Africa/Lome
+Tonga|Pacific/Tongatapu
+Trinidad and Tobago|America/Port_of_Spain
+Tunisia|Africa/Tunis
+Turkey|Europe/Istanbul
+Turkmenistan|Asia/Ashgabat
+Tuvalu|Pacific/Funafuti
+Uganda|Africa/Kampala
+Ukraine|Europe/Kyiv
+United Arab Emirates|Asia/Dubai
+United Kingdom|Europe/London
+United States|America/New_York
+Uruguay|America/Montevideo
+Uzbekistan|Asia/Tashkent
+Vanuatu|Pacific/Efate
+Vatican City|Europe/Vatican
+Venezuela|America/Caracas
+Vietnam|Asia/Ho_Chi_Minh
+Yemen|Asia/Aden
+Zambia|Africa/Lusaka
+Zimbabwe|Africa/Harare
+Palestine|Asia/Gaza
+`;
+
+/* ----------------------------- UTIL & STATE ------------------------------ */
+const COUNTRY_TZ = COUNTRY_TZ_RAW.trim().split('\n').map(line=>{
+  const [country, tz] = line.split('|');
+  return {country, tz};
+});
+
+// Map alias label (for search)
+const ALIASES = new Map([
+  ['WIB','Asia/Jakarta'], ['WITA','Asia/Makassar'], ['WIT','Asia/Jayapura'],
+  ['IST','Asia/Kolkata'], ['JST','Asia/Tokyo'], ['KST','Asia/Seoul'],
+  ['CET','Europe/Berlin'], ['EET','Europe/Bucharest'], ['UTC','Etc/UTC'],
+  ['GMT','Etc/UTC'], ['PST','America/Los_Angeles'], ['EST','America/New_York'],
+  ['WET','Europe/Lisbon'], ['EAT','Africa/Nairobi'], ['MSK','Europe/Moscow']
+]);
+
+// Inject extra Indonesian zones (non-negara, hanya bonus untuk pencarian)
+const BONUS_TZ = [
+  {country:'Indonesia (WIB)', tz:'Asia/Jakarta'},
+  {country:'Indonesia (WITA)', tz:'Asia/Makassar'},
+  {country:'Indonesia (WIT)', tz:'Asia/Jayapura'}
+];
+
+/* Create floating stars */
+(function spawnStars(){
+  const container = document.getElementById('stars');
+  const count = 80;
+  for(let i=0;i<count;i++){
+    const s = document.createElement('div');
+    s.className='star';
+    const left = Math.random()*100, delay = Math.random()*18, dur = 12 + Math.random()*18;
+    s.style.left = left + 'vw';
+    s.style.bottom = (Math.random()*-40)+'vh';
+    s.style.setProperty('--dur', dur+'s');
+    s.style.animationDelay = -delay+'s';
+    container.appendChild(s);
+  }
+})();
+
+/* -------------------------- RENDERING FUNCTIONS -------------------------- */
+const grid = document.getElementById('grid');
+const searchInput = document.getElementById('searchInput');
+const badgeCount = document.getElementById('badgeCount');
+
+let CARDS = []; // {el, country, tz}
+
+function formatDateTime(d, tz){
+  const optsTime = {hour:'2-digit', minute:'2-digit', second:'2-digit', hour12:false, timeZone:tz};
+  const optsDate = {weekday:'long', year:'numeric', month:'long', day:'numeric', timeZone:tz};
+  return {
+    time: new Intl.DateTimeFormat('id-ID', optsTime).format(d),
+    date: new Intl.DateTimeFormat('id-ID', optsDate).format(d)
+  };
+}
+
+function createCard(item){
+  const el = document.createElement('div');
+  el.className='card';
+  el.setAttribute('data-country', item.country.toLowerCase());
+  el.setAttribute('data-tz', item.tz.toLowerCase());
+
+  el.innerHTML = `
+    <div class="row">
+      <div class="name">${item.country}</div>
+      <div class="tz">${item.tz}</div>
+    </div>
+    <div class="time"><span class="hhmmss">00:00:00</span><span class="secBlink"> ▪</span></div>
+    <div class="date">—</div>
+  `;
+
+  // tilt on pointer
+  el.addEventListener('mousemove', e=>{
+    const r = el.getBoundingClientRect();
+    const dx = (e.clientX - (r.left + r.width/2)) / (r.width/2);
+    const dy = (e.clientY - (r.top + r.height/2)) / (r.height/2);
+    el.style.transform = `perspective(700px) rotateX(${(-dy*6).toFixed(2)}deg) rotateY(${(dx*6).toFixed(2)}deg) translateY(-3px)`;
+  });
+  el.addEventListener('mouseleave', ()=> el.style.transform='');
+
+  grid.appendChild(el);
+  return {el, ...item};
+}
+
+function buildGrid(){
+  grid.innerHTML = '';
+  CARDS = [];
+  [...COUNTRY_TZ, ...BONUS_TZ].forEach(item=>{
+    if(item.country==='Indonesia'){ return; } // featured handled separately
+    CARDS.push(createCard(item));
+  });
+  badgeCount.textContent = `Menampilkan ${CARDS.length} kartu`;
+}
+
+function updateAll(){
+  const now = new Date();
+  // Featured Indonesia (Jakarta)
+  const idFmt = formatDateTime(now, 'Asia/Jakarta');
+  document.getElementById('idTime').textContent = idFmt.time;
+  document.getElementById('idDate').textContent = idFmt.date;
+  document.getElementById('idSec').classList.toggle('secBlink');
+
+  // Cards
+  for(const c of CARDS){
+    const {time, date} = formatDateTime(now, c.tz);
+    c.el.querySelector('.hhmmss').textContent = time;
+    c.el.querySelector('.date').textContent = date;
+  }
+}
+
+/* ------------------------------- SEARCH ---------------------------------- */
+function applyFilter(q){
+  q = q.trim().toLowerCase();
+  const tzAlias = ALIASES.get(q.toUpperCase());
+  const matchTz = tzAlias ? tzAlias.toLowerCase() : null;
+
+  let shown = 0;
+  for(const c of CARDS){
+    const hit = !q || c.country.toLowerCase().includes(q) || c.tz.toLowerCase().includes(q) ||
+                (matchTz && c.tz.toLowerCase()===matchTz);
+    c.el.style.display = hit ? '' : 'none';
+    if(hit) shown++;
+  }
+  badgeCount.textContent = q ? `Hasil: ${shown}` : `Menampilkan ${CARDS.length} kartu`;
+}
+
+searchInput.addEventListener('input', e=> applyFilter(e.target.value));
+document.getElementById('btnReset').addEventListener('click', ()=>{
+  searchInput.value=''; applyFilter('');
+  window.scrollTo({top:0, behavior:'smooth'});
+});
+
+/* ------------------------------ INIT & TICK ------------------------------ */
+buildGrid();
+updateAll();
+setInterval(updateAll, 1000);
+
+// subtle parallax on featured card
+(function(){
+  const card = document.getElementById('idCard');
+  let raf;
+  function onMove(e){
+    const r = card.getBoundingClientRect();
+    const dx = (e.clientX - (r.left + r.width/2)) / (r.width/2);
+    const dy = (e.clientY - (r.top + r.height/2)) / (r.height/2);
+    cancelAnimationFrame(raf);
+    raf = requestAnimationFrame(()=>{
+      card.style.transform = `perspective(900px) rotateX(${(-dy*4).toFixed(2)}deg) rotateY(${(dx*6).toFixed(2)}deg)`;
+    });
+  }
+  card.addEventListener('mousemove', onMove);
+  card.addEventListener('mouseleave', ()=> card.style.transform='');
+})();
+</script>
+</body>
+</html>
